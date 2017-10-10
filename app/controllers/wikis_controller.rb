@@ -1,6 +1,14 @@
 class WikisController < ApplicationController
   def index
-    @wikis = Wiki.all
+    if current_user.standard?
+      @wikis = Wiki.where(private: false)
+    elsif current_user.premium?
+      @wikis = Wiki.where(private: false) 
+      @wikis += Wiki.where(user_id: current_user.id)
+      @wikis = @wikis.uniq
+    else
+      @wikis = Wiki.all
+    end
   end
 
   def show
@@ -54,6 +62,6 @@ class WikisController < ApplicationController
   private 
 
   def wiki_params
-    params.require(:wiki).permit(:title, :body)
+    params.require(:wiki).permit(:title, :body, :private) 
   end
 end
