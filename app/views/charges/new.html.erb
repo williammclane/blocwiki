@@ -1,0 +1,20 @@
+<h3>Your current membership level is: <strong><%= current_user.role %></strong></h3>
+
+<% if current_user.standard? %>
+    <%= form_tag charges_path do %>
+       <h4>Upgrade to Premium Membership!</h4>
+       <h5>Benefits Include:</h5>
+       <ul>
+           <li>Create private wikis that can't be viewed by the public.</li>
+           <li>Control who can edit your wikis by personally selecting your collaborators.</li>
+           <li>Knowledge is power. Power is meaningless without control.</li>
+           <li>Premium Membership is available for an annual fee of only $15.</li>
+       </ul>
+       <script class='stripe-button' src="https://checkout.stripe.com/checkout.js" data-key="<%= @stripe_btn_data[:key] %>" data-amount="<%= @stripe_btn_data[:amount] %>" data-description="<%= @stripe_btn_data[:description] %>" ></script>
+    <% end %>
+<% elsif current_user.premium? %>
+    <%= form_tag do %>
+        <h4>Not happy with your Premium Membership?</h4>
+        <%= link_to "Downgrade to Standard Membership", downgrade_index_path, method: :create, class: 'btn btn-danger', data: {confirm: "Do you really want to downgrade your account? All of your private wikis will become public, with any member able to edit and delete your work."} %>
+    <% end %>
+<% end %>
